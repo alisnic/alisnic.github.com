@@ -1,0 +1,116 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <title>Unity performance tweaks</title>
+  <meta name="author" content="Andrei Lisnic" />
+  <meta name="description" content="a (instanceof) lisnic." />
+  <link rel="alternate" type="application/rss+xml" href="/atom.xml" />
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png" />
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+
+<link href='/assets/global-ed12576ac2a8c45d153e3d7049e3d321.css' rel='stylesheet' type='text/css' />
+
+</head>
+
+<body>
+  <div id="wrapper">
+      <!-- Sidebar -->
+      <div id="sidebar-wrapper">
+        <div id="avatar"></div>
+        <ul class="sidebar-nav">
+          <li><a href="#"><b>Andrei Lisnic</b></a></li>
+          <li><a href="/" >All posts</a></li>
+          <li><a href="https://github.com/alisnic" >github</a></li>
+          <li><a href="https://twitter.com/andrei_lisnic" >twitter</a></li>
+          <li><a href="http://www.linkedin.com/in/alisnic" >linkedin</a></li>
+          <li><a href="/atom.xml" >rss</a></li>
+          <li><a href="#"><b>Projects</b></a></li>
+          <li><a href="/nyny/">New York, New York</a></li>
+        </ul>
+      </div>
+
+      <!-- Page content -->
+      <div id="page-content-wrapper">
+        <div class="page-content inset">
+          <div class="row">
+            <div class="col-md-12">
+              <script type="application/x-social-share-privacy-settings">{"path_prefix":"http://panzi.github.io/SocialSharePrivacy/","layout":"line","services":{"buffer":{"status":false},"delicious":{"status":false},"disqus":{"status":false},"fbshare":{"status":false},"flattr":{"status":false},"hackernews":{"status":false},"linkedin":{"status":false},"mail":{"status":false},"stumbleupon":{"status":false},"tumblr":{"status":false},"xing":{"status":false}, "pinterest":{"status":false}}}</script>
+<div class="row">
+  <div class="col-md-8">
+    <h1 class="fancy">Unity performance tweaks</h1>
+
+    <div class="post-date fancy">
+      March 20, 2013
+    </div>
+    <br />
+
+    <p><strong>Prerequisites:</strong>
+You want to use unity, we let the unity flame wars aside, and you don&rsquo;t want to
+use <a href="https://www.google.com/search?q=unity+llvmpipe">LLVMpipe</a>.</p>
+
+<ol>
+<li><p>Remove useless lens</p>
+
+<pre><code> sudo apt-get autoremove unity-lens-videos unity-lens-photos \
+   unity-lens-gwibber unity-lens-shopping unity-lens-music
+</code></pre></li>
+<li><p>Install compiz config</p>
+
+<pre><code> sudo apt-get install compizconfig-settings-manager
+</code></pre></li>
+<li><p>Open <code>compizconfig-settings-manager</code></p></li>
+<li>Uncheck &ldquo;Animations&rdquo; and &ldquo;Fade windows&rdquo;</li>
+<li>Open &ldquo;OpenGL&rdquo;, and set the texture filter to &ldquo;Fast&rdquo;</li>
+<li>Enjoy</li>
+</ol>
+
+
+
+    <br />
+
+    <section class="meta">
+      <div data-social-share-privacy='true'></div>
+      <hr />
+      <div id="disqus_thread"></div>
+
+      <script type="text/javascript">
+          /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+          var disqus_shortname = 'alisnic-github'; // required: replace example with your forum shortname
+
+          /* * * DON'T EDIT BELOW THIS LINE * * */
+          (function() {
+              var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+              dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+              (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+      </script>
+    </section>
+  </div>
+</div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  <script src='/assets/global-65d9c526b0661a1f42c26a513b3bb72a.js' type='text/javascript'></script>
+
+
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-37064536-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+</body>
+</html>

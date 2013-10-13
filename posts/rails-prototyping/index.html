@@ -1,0 +1,137 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <title>Fast Rails app prototyping</title>
+  <meta name="author" content="Andrei Lisnic" />
+  <meta name="description" content="a (instanceof) lisnic." />
+  <link rel="alternate" type="application/rss+xml" href="/atom.xml" />
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png" />
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+
+<link href='/assets/global-ed12576ac2a8c45d153e3d7049e3d321.css' rel='stylesheet' type='text/css' />
+
+</head>
+
+<body>
+  <div id="wrapper">
+      <!-- Sidebar -->
+      <div id="sidebar-wrapper">
+        <div id="avatar"></div>
+        <ul class="sidebar-nav">
+          <li><a href="#"><b>Andrei Lisnic</b></a></li>
+          <li><a href="/" >All posts</a></li>
+          <li><a href="https://github.com/alisnic" >github</a></li>
+          <li><a href="https://twitter.com/andrei_lisnic" >twitter</a></li>
+          <li><a href="http://www.linkedin.com/in/alisnic" >linkedin</a></li>
+          <li><a href="/atom.xml" >rss</a></li>
+          <li><a href="#"><b>Projects</b></a></li>
+          <li><a href="/nyny/">New York, New York</a></li>
+        </ul>
+      </div>
+
+      <!-- Page content -->
+      <div id="page-content-wrapper">
+        <div class="page-content inset">
+          <div class="row">
+            <div class="col-md-12">
+              <script type="application/x-social-share-privacy-settings">{"path_prefix":"http://panzi.github.io/SocialSharePrivacy/","layout":"line","services":{"buffer":{"status":false},"delicious":{"status":false},"disqus":{"status":false},"fbshare":{"status":false},"flattr":{"status":false},"hackernews":{"status":false},"linkedin":{"status":false},"mail":{"status":false},"stumbleupon":{"status":false},"tumblr":{"status":false},"xing":{"status":false}, "pinterest":{"status":false}}}</script>
+<div class="row">
+  <div class="col-md-8">
+    <h1 class="fancy">Fast Rails app prototyping</h1>
+
+    <div class="post-date fancy">
+      January 23, 2013
+    </div>
+    <br />
+
+    <p>There are often times when you have an idea that will refuse to leave your mind.
+It is the most beautiful sensation you can ever have.
+As an any other idea, you must first see it shape before you can throw it away.
+At this point it is the most important to establish a very effective and noise free channel between your idea and its implementation.
+I will describe what I use and what I do to quickly make small Rails apps, and what I use for it.</p>
+
+<pre><code>git clone git@github.com:alisnic/naked_rail.git myapp
+cd myapp
+rm -rf .git
+git init &amp;&amp; git add . &amp;&amp; git commit -a -m "initial commit"
+</code></pre>
+
+<h1>Prototyping</h1>
+
+<p>I use an <a href="https://github.com/alisnic/naked_rail">app template</a> for all my new apps. As many things that I created, it was done to write less, and includes the following libs:</p>
+
+<ul>
+<li><a href="http://haml.info/">HAML</a> + <a href="http://sass-lang.com/">SASS</a> + <a href="http://coffeescript.org/">CoffeeScript</a></li>
+<li><a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap</a></li>
+<li>PagesController which renders its action. To add a view, all I need to do is to create a <code>foo.haml</code> file in <code>app/views/pages</code>, and it will be accessible at <code>/pages/foo</code>. No new routes, no new controllers. You first idea is static.</li>
+<li><a href="https://github.com/guard/guard-livereload">guard-livereload</a>. I have a vim window alongside the browser on my FullHD monitor. Every time I change the code, the page reloads automatically. This is <strong>very</strong> convenient, especially when writing the markup.</li>
+<li><a href="https://github.com/alisnic/naked_rail/blob/master/app/views/application/_flash_messages.html.haml">flash</a> and <a href="https://github.com/alisnic/naked_rail/blob/master/app/views/application/_validation_errors.html.haml">error</a> partials. To show a model validation errors in a form, all I have to do is add <code>render 'validation_errors', :resource =&gt; @entity</code></li>
+<li><a href="https://github.com/charliesome/better_errors">better_errors</a>. Really cool gem, makes breaking things pleasant. It will open a ruby shell in the context of the error in the browser.</li>
+</ul>
+
+
+<h1>Growing</h1>
+
+<p>If my idea proved strong and stable, I have the tools to grow on the code I made in the prototyping step, and by that I mean I have all the testing tools I need:</p>
+
+<ul>
+<li><a href="http://rspec.info/">Rspec</a></li>
+<li><a href="https://github.com/thoughtbot/capybara-webkit">Capybara-webkit</a> (can execute JS) + <a href="https://github.com/alisnic/naked_rail/blob/master/features/step_definitions/navigation_steps.rb">navigation steps</a></li>
+<li><a href="https://github.com/thoughtbot/shoulda">Shoulda</a>. Testing models is plain easy and straightforward. The main idea &ndash; don&rsquo;t test ActiveRecord, it has been tested for you. (ex: <code>it { should belong_to(:user) }</code>)</li>
+<li><a href="https://github.com/thoughtbot/factory_girl">FactoryGirl</a></li>
+</ul>
+
+
+<h1>Final note</h1>
+
+<p>I have presented a set of tools and practices to create a Rails app fast. As many other things out there, it is highly opinionated. Also, the repo which I created is not licensed in any way, so do whatever the hell to want to do with it.</p>
+
+
+    <br />
+
+    <section class="meta">
+      <div data-social-share-privacy='true'></div>
+      <hr />
+      <div id="disqus_thread"></div>
+
+      <script type="text/javascript">
+          /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+          var disqus_shortname = 'alisnic-github'; // required: replace example with your forum shortname
+
+          /* * * DON'T EDIT BELOW THIS LINE * * */
+          (function() {
+              var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+              dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+              (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+      </script>
+    </section>
+  </div>
+</div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  <script src='/assets/global-65d9c526b0661a1f42c26a513b3bb72a.js' type='text/javascript'></script>
+
+
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-37064536-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+</body>
+</html>
