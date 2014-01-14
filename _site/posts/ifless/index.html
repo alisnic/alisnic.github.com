@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width; initial-scale=1.0, maximum-scale=1">
+    <link href="http://gmpg.org/xfn/11" rel="profile">
+
+    <title>
+      Andrei Lisnic
+    </title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="/public/css/hyde.css">
+    <link rel="stylesheet" href="/public/css/pygments.css">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400italic,400,600,700|Abril+Fatface">
+
+    <!-- RSS -->
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+  </head>
+  <body>
+
+    <header class="masthead">
+      <div class="masthead-inner">
+        <h1><a href="/">Andrei Lisnic</a></h1>
+        <ul>
+          <li><a href="https://github.com/alisnic" >github</a></li>
+          <li><a href="https://twitter.com/andrei_lisnic" >twitter</a></li>
+          <li><a href="http://www.linkedin.com/in/alisnic" >linkedin</a></li>
+          <li><a href="/atom.xml" >rss</a></li>
+        </ul>
+        <h3>Projects</h3>
+        <ul>
+          <li><a href="/nyny/">New York, New York</a></li>
+        </ul>
+      </div>
+    </header>
+
+    <div class="content container">
+      <div class="post">
+  <h1>If-less programming</h1>
+  <span class="post-date">28 Dec 2012</span>
+  <p>I recently watched a Google tech talk called <a href="http://www.youtube.com/watch?v=4F72VULWFvc&amp;feature=channel">&quot;The Clean Code Talks -- Inheritance, Polymorphism, &amp; Testing&quot;</a>, and I was amazed how <strong>Misko Hevery</strong> explained that (a lot of) ifs can be a smelly thing in a Object Oriented language.</p>
+
+<p>Being fascinated by the idea, I decided to <a href="https://www.google.com/search?q=programming+without+ifs">google</a> it, and I was surprised that if-less programming is a pretty popular topic. I noticed <a href="http://stackoverflow.com/questions/1937362/can-you-write-any-algorithm-without-an-if-statement">a response to a stackoverflow</a> question which stated:</p>
+
+<blockquote>
+<p>An “if” statement is an abomination in an Object Oriented language.
+Why? Well, an OO language is composed of classes, objects and methods, and an “if” statement is inescapably none of those. You can’t write “if” in an OO way. It shouldn&#39;t exist. Conditional execution, like everything else, should be a method. A method of what? Boolean.</p>
+</blockquote>
+
+<p>Any Smalltalk-er knows about this thing, because there are no if statements in Smalltalk. In this language, the Boolean class has <code>ifTrue</code> and <code>ifFalse</code> methods, which accept blocks which will be executed depending on the value of the boolean expression. This feels at least, a bit weird and unclear to me, so I decided to investigate.</p>
+
+<h1>The Reasons</h1>
+
+<p>It is obvious that we can&#39;t avoid conditionals, especially when comparing primitive data types. But most of the time it is not considered a good practice to use ifs in a Object-Oriented language. So what is really wrong with conditionals in a Object Oriented language?</p>
+
+<h2>Polymorphism</h2>
+
+<p>The main and most strong idea which I got from if-less programming is simple: If you use a lot of if statements, you&#39;re doing polymorphism wrong. Here is a simple (and dumb) example:</p>
+<div class="highlight"><pre><code class="ruby language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Printer</span>
+  <span class="k">def</span> <span class="nf">print</span> <span class="p">(</span><span class="n">file</span><span class="p">)</span>
+    <span class="k">case</span> <span class="n">file</span><span class="o">.</span><span class="n">type</span>
+    <span class="k">when</span> <span class="ss">:docx</span>
+      <span class="n">print_office_word</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+    <span class="k">when</span> <span class="ss">:pdf</span>
+      <span class="n">print_pdf</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>Notice here that I used a <code>switch</code> statement, it&#39;s basically the same as using ifs. But let&#39;s concentrate on the example. Why this class is bad? Well, for several reasons.</p>
+
+<h3>Ctrl-C, Ctrl-V</h3>
+
+<p>If the behaviour in the described object is complex enough, this switch will pop up all over the place. Image you will add a new method to the <code>Printer</code> class:</p>
+<div class="highlight"><pre><code class="ruby language-ruby" data-lang="ruby"><span class="k">def</span> <span class="nf">get_meta_info</span> <span class="p">(</span><span class="n">file</span><span class="p">)</span>
+  <span class="c1"># gotta do that switch here</span>
+  <span class="c1"># good thing I have the clipboard</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>Besides the same <code>switch</code>, you will have to add methods to process each file type which your <code>Printer</code> knows about.</p>
+
+<h3>Extensibility</h3>
+
+<p>It is very hard to extend code which has a lot of branches, because chances are that the difference in behaviour between these branches is pretty big.</p>
+
+<h3>The right way</h3>
+
+<p>To avoid unnecessary conditions and headaches, our <code>Printer</code> class should look like this:</p>
+<div class="highlight"><pre><code class="ruby language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Printer</span>
+  <span class="k">def</span> <span class="nf">print</span><span class="p">(</span><span class="n">file</span><span class="p">);</span> <span class="k">end</span>
+  <span class="k">def</span> <span class="nf">get_meta_info</span><span class="p">(</span><span class="n">file</span><span class="p">);</span> <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">PdfPrinter</span> <span class="o">&lt;</span> <span class="no">Printer</span>
+  <span class="k">def</span> <span class="nf">print</span> <span class="p">(</span><span class="n">file</span><span class="p">)</span>
+    <span class="c1">#</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">get_meta_info</span> <span class="p">(</span><span class="n">file</span><span class="p">)</span>
+    <span class="c1">#</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">MSWordPrinter</span> <span class="o">&lt;</span> <span class="no">Printer</span>
+  <span class="k">def</span> <span class="nf">print</span> <span class="p">(</span><span class="n">file</span><span class="p">)</span>
+    <span class="c1">#</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">get_meta_info</span> <span class="p">(</span><span class="n">file</span><span class="p">)</span>
+    <span class="c1">#</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+<h2>Language features</h2>
+
+<p>In a lot of cases, avoiding conditions is easy, because there are language constructs which can do the same thing. Most of the time these constructs are present for a important reason - it&#39;s a better way to do things. Let&#39;s look at several of them. I used Ruby in the examples, but this applicable to any good OO language.</p>
+
+<h3>Filter data</h3>
+
+<p>Any decent OO languages has means to easily filter data, you don&#39;t need ifs to do that:</p>
+<div class="highlight"><pre><code class="ruby language-ruby" data-lang="ruby"><span class="c1"># I slept during the functional classes</span>
+<span class="n">collection</span><span class="o">.</span><span class="n">each</span> <span class="p">{</span><span class="o">|</span><span class="n">item</span><span class="o">|</span> <span class="n">result</span> <span class="o">&lt;&lt;</span> <span class="n">item</span> <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">condition?</span> <span class="p">}</span>
+</code></pre></div>
+<p>A very stupid example, but it should make the point. What we should have used is:</p>
+<div class="highlight"><pre><code class="ruby language-ruby" data-lang="ruby"><span class="n">result</span> <span class="o">=</span> <span class="n">collection</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:condition?</span><span class="p">)</span>
+</code></pre></div>
+<h3>Processing errors</h3>
+
+<p>If you got a method which can fail, you might be tempted to do something like this:</p>
+<div class="highlight"><pre><code class="ruby language-ruby" data-lang="ruby"><span class="n">result</span> <span class="o">=</span> <span class="n">do_something</span><span class="p">()</span>
+<span class="k">if</span> <span class="n">result</span> <span class="o">==</span> <span class="kp">nil</span>
+  <span class="c1">#something is wrong</span>
+<span class="k">else</span>
+  <span class="c1">#process</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>It is better that you method raises errors in case something goes wrong. It improves readability, adds meaning, and describes what the system actually does:</p>
+<div class="highlight"><pre><code class="ruby language-ruby" data-lang="ruby"><span class="k">begin</span>
+  <span class="n">result</span> <span class="o">=</span> <span class="n">do_something</span><span class="p">()</span>
+<span class="k">rescue</span> <span class="no">FileSystemError</span>
+  <span class="c1">#disk is full</span>
+<span class="k">rescue</span> <span class="no">NetworkError</span>
+  <span class="c1">#no internet connection</span>
+<span class="k">end</span>
+</code></pre></div>
+<h3>Default values</h3>
+
+<p>You want to keep a default value for a variable unless it is assigned, you might want to do something like this:</p>
+<div class="highlight"><pre><code class="ruby language-ruby" data-lang="ruby"><span class="k">def</span> <span class="nf">method</span> <span class="p">(</span><span class="n">object</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">object</span><span class="o">.</span><span class="n">property</span>
+    <span class="n">param</span> <span class="o">=</span> <span class="n">object</span><span class="o">.</span><span class="n">property</span>
+  <span class="k">else</span>
+    <span class="n">param</span> <span class="o">=</span> <span class="n">default_param</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>You did repeat yourself, wrote 3 lines, what you should have written is:</p>
+<div class="highlight"><pre><code class="ruby language-ruby" data-lang="ruby"><span class="k">def</span> <span class="nf">method</span> <span class="p">(</span><span class="n">object</span><span class="p">)</span>
+  <span class="n">param</span> <span class="o">=</span> <span class="n">object</span><span class="o">.</span><span class="n">property</span> <span class="o">||</span> <span class="n">default_param</span>
+<span class="k">end</span>
+</code></pre></div>
+<h2>Testing</h2>
+
+<p>One of things which can suggest that things got to fishy in your implementation, is how hard is to test your objects. Classes with a lot of conditions require a lot of test cases and a lot of setup code. If your behaviour were properly isolated and subclassed, then your test would be very simple and with minimum setup code.</p>
+
+<p>By having small, specific objects, each time you have to test a class, you are testing an aspect of you system, not a behaviour.</p>
+
+<h1>Conclusion</h1>
+
+<p>The idea of if-less programming is very interesting and provokes to thought. As any other good idea, it should be not taken to extremes. Any language construct must be used when it is the more reasonable thing to do. I like the fact that the presence of if-s can indicate a bad OO design.</p>
+
+</div>
+
+<div>
+  <h3>Related Posts</h3>
+  <ul class="related-posts">
+    
+      <li>
+        <h4>
+          <a href="/posts/ruby-logs">
+            Log filename, line and function name in ruby automatically
+            <small>11 May 2013</small>
+          </a>
+        </h4>
+      </li>
+    
+      <li>
+        <h4>
+          <a href="/posts/unity-fly">
+            Unity performance tweaks
+            <small>20 Mar 2013</small>
+          </a>
+        </h4>
+      </li>
+    
+      <li>
+        <h4>
+          <a href="/posts/vim-run-hotkey">
+            Vim hotkey to run current file depending on the filetype
+            <small>11 Mar 2013</small>
+          </a>
+        </h4>
+      </li>
+    
+  </ul>
+</div>
+
+
+<section class="meta">
+  <div data-social-share-privacy='true'></div>
+  <hr />
+  <div id="disqus_thread"></div>
+
+  <script type="text/javascript">
+      /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+      var disqus_shortname = 'alisnic-github'; // required: replace example with your forum shortname
+
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+</section>
+
+
+    </div>
+
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-37064536-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>

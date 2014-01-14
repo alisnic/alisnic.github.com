@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width; initial-scale=1.0, maximum-scale=1">
+    <link href="http://gmpg.org/xfn/11" rel="profile">
+
+    <title>
+      Andrei Lisnic
+    </title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="/public/css/hyde.css">
+    <link rel="stylesheet" href="/public/css/pygments.css">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400italic,400,600,700|Abril+Fatface">
+
+    <!-- RSS -->
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+  </head>
+  <body>
+
+    <header class="masthead">
+      <div class="masthead-inner">
+        <h1><a href="/">Andrei Lisnic</a></h1>
+        <ul>
+          <li><a href="https://github.com/alisnic" >github</a></li>
+          <li><a href="https://twitter.com/andrei_lisnic" >twitter</a></li>
+          <li><a href="http://www.linkedin.com/in/alisnic" >linkedin</a></li>
+          <li><a href="/atom.xml" >rss</a></li>
+        </ul>
+        <h3>Projects</h3>
+        <ul>
+          <li><a href="/nyny/">New York, New York</a></li>
+        </ul>
+      </div>
+    </header>
+
+    <div class="content container">
+      <div class="post">
+  <h1>On logic in a Rails app</h1>
+  <span class="post-date">24 Dec 2012</span>
+  <p>Recently, Grant Ammons wrote <a href="http://gammons.github.com/architecture/2012/12/22/where-the-logic-hides/">a nice article</a> about where logic should lie in a Rails app. I would like to complement his opinion, and probably add some real life arguments to it.</p>
+
+<p>Grant extracted logic from the controller, and put it in a separate object, which I also do most of the time. However, a user named DHH (which probably is DHH) said:</p>
+
+<blockquote>
+<p>So all you&#39;ve done here is extract the work of the controller action into a separate object. This adds needless indirection, makes the code base harder to follow, and is completely unnecessary.</p>
+</blockquote>
+
+<p>I strongly disagree, and I have good reasons for it.</p>
+
+<p>You know what makes the code base hard to follow? Fat controllers with logic in them. I worked on a Rails app with Controllers of 800 lines of code, <strong>it. is. a. freaking. nightmare.</strong></p>
+
+<h2>My approach</h2>
+
+<p>I look at Rails as web presentation layer, it makes my app work in the browser. This has some consequences to my codebase:</p>
+
+<ul>
+<li>data-only models (no logic should be in models)</li>
+<li>logicless controllers (no logic should be there either)</li>
+<li>anything else is in single-responsibility objects in <code>app/domain/</code></li>
+</ul>
+
+<p>You might think that this is a refactor pattern, and you are right. And you might say that this unnecessary to do from the start, and you may also be right. But the cost of creating a file and moving behaviour there is exactly 0, but the benefits are there from day 1.</p>
+
+<h2>Why I do it</h2>
+
+<h3>Fast tests</h3>
+
+<p>The least I am coupled to Rails, the fastest my tests are. Currently, on a medium Rails project my tests run 2-3 seconds, where 90% of the time is wasted to boot rails and test models.</p>
+
+<p>I don&#39;t test my controllers, because they have no logic in them. My methods in controllers don&#39;t have more than 4-5 lines of code.</p>
+<div class="highlight"><pre><code class="ruby language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">RatingsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="k">def</span> <span class="nf">create</span>
+    <span class="n">success</span> <span class="o">=</span> <span class="no">RatesBusiness</span><span class="o">.</span><span class="n">add_rating</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:business_id</span><span class="o">]</span><span class="p">,</span>
+                                       <span class="n">params</span><span class="o">[</span><span class="ss">:score</span><span class="o">]</span><span class="p">,</span>
+                                       <span class="n">current_user</span><span class="p">)</span>
+    <span class="n">render</span> <span class="ss">json</span><span class="p">:</span> <span class="p">{</span><span class="ss">success</span><span class="p">:</span> <span class="n">success</span><span class="p">}</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+<p><code>RatesBusiness</code> has some foursquare-related logic besides just creating a entry in the database. Using this approach, I have a <em>very</em> fast TDD flow, because most of the time I don&#39;t need Rails to test my logic. (any dependency to models is stubbed, as any other external dependency).</p>
+
+<p>Your controller only connects your logic to the web interface.</p>
+
+<h3>Code and forget</h3>
+
+<p>If you have a well tested functionality that works, you don&#39;t need see it in front of you when you code in your application. This is where single-responsibility objects kick in, I TDD them one time, I know about their existence and what their interface is, I will not ever see their code again.</p>
+
+<h3>Framework agnostic</h3>
+
+<p>When your app logic is not coupled with Rails, you do not depend on it, its version, or interface. Isolating some functionality to a service is a matter of moving some files around.</p>
+
+<h3>Reduced stress and debug times</h3>
+
+<p>Most of my classes fit in one screen, and have descriptive names as <code>CategorizesCampagins</code> or <code>FiltersBusinesses</code>, which makes debugging them very, very easy and pleasant. I don&#39;t need to scroll the hell out of my screen to understand how an isolated piece of functionality works.</p>
+
+<h2>Conclusion</h2>
+
+<p>Rails is just a framework to make your app work on the web, don&#39;t mix your logic with rails-y stuff. Your app domain should be defined anywhere besides Rails views, controllers, and models.</p>
+
+<h2>Inspiration</h2>
+
+<p>First, and most influential person for me is <a href="https://twitter.com/garybernhardt">Gary Bernhardt</a> and his screencast series <a href="https://www.destroyallsoftware.com/screencasts">destroyallsoftware</a>. If you want to learn isolated testing - watch this guy, he is amazing. (He even test-drives bash scripts :D)</p>
+
+<p><a href="http://blog.codeclimate.com/blog/2012/11/28/your-objects-the-unix-way/">Your objects the UNIX way</a>.</p>
+
+<p>Also, my approach was influenced by <a href="http://www.youtube.com/watch?v=CGN4RFkhH2M">Hexagonal Rails</a> concept.</p>
+
+</div>
+
+<div>
+  <h3>Related Posts</h3>
+  <ul class="related-posts">
+    
+      <li>
+        <h4>
+          <a href="/posts/ruby-logs">
+            Log filename, line and function name in ruby automatically
+            <small>11 May 2013</small>
+          </a>
+        </h4>
+      </li>
+    
+      <li>
+        <h4>
+          <a href="/posts/unity-fly">
+            Unity performance tweaks
+            <small>20 Mar 2013</small>
+          </a>
+        </h4>
+      </li>
+    
+      <li>
+        <h4>
+          <a href="/posts/vim-run-hotkey">
+            Vim hotkey to run current file depending on the filetype
+            <small>11 Mar 2013</small>
+          </a>
+        </h4>
+      </li>
+    
+  </ul>
+</div>
+
+
+<section class="meta">
+  <div data-social-share-privacy='true'></div>
+  <hr />
+  <div id="disqus_thread"></div>
+
+  <script type="text/javascript">
+      /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+      var disqus_shortname = 'alisnic-github'; // required: replace example with your forum shortname
+
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+</section>
+
+
+    </div>
+
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-37064536-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>

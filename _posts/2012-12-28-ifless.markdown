@@ -1,0 +1,157 @@
+---
+layout: post
+title: If-less programming
+category: posts
+---
+
+I recently watched a Google tech talk called ["The Clean Code Talks -- Inheritance, Polymorphism, & Testing"](http://www.youtube.com/watch?v=4F72VULWFvc&feature=channel), and I was amazed how **Misko Hevery** explained that (a lot of) ifs can be a smelly thing in a Object Oriented language.
+
+Being fascinated by the idea, I decided to [google](https://www.google.com/search?q=programming+without+ifs) it, and I was surprised that if-less programming is a pretty popular topic. I noticed [a response to a stackoverflow](http://stackoverflow.com/questions/1937362/can-you-write-any-algorithm-without-an-if-statement) question which stated:
+
+>An “if” statement is an abomination in an Object Oriented language.
+> Why? Well, an OO language is composed of classes, objects and methods, and an “if” statement is inescapably none of those. You can’t write “if” in an OO way. It shouldn't exist. Conditional execution, like everything else, should be a method. A method of what? Boolean.
+
+Any Smalltalk-er knows about this thing, because there are no if statements in Smalltalk. In this language, the Boolean class has `ifTrue` and `ifFalse` methods, which accept blocks which will be executed depending on the value of the boolean expression. This feels at least, a bit weird and unclear to me, so I decided to investigate.
+
+# The Reasons
+
+It is obvious that we can't avoid conditionals, especially when comparing primitive data types. But most of the time it is not considered a good practice to use ifs in a Object-Oriented language. So what is really wrong with conditionals in a Object Oriented language?
+
+## Polymorphism
+
+The main and most strong idea which I got from if-less programming is simple: If you use a lot of if statements, you're doing polymorphism wrong. Here is a simple (and dumb) example:
+
+```ruby
+class Printer
+  def print (file)
+    case file.type
+    when :docx
+      print_office_word(file)
+    when :pdf
+      print_pdf(file)
+    end
+  end
+end
+```
+
+Notice here that I used a `switch` statement, it's basically the same as using ifs. But let's concentrate on the example. Why this class is bad? Well, for several reasons.
+
+### Ctrl-C, Ctrl-V
+
+If the behaviour in the described object is complex enough, this switch will pop up all over the place. Image you will add a new method to the `Printer` class:
+
+```ruby
+def get_meta_info (file)
+  # gotta do that switch here
+  # good thing I have the clipboard
+end
+```
+
+Besides the same `switch`, you will have to add methods to process each file type which your `Printer` knows about.
+
+
+### Extensibility
+
+It is very hard to extend code which has a lot of branches, because chances are that the difference in behaviour between these branches is pretty big.
+
+### The right way
+To avoid unnecessary conditions and headaches, our `Printer` class should look like this:
+
+```ruby
+class Printer
+  def print(file); end
+  def get_meta_info(file); end
+end
+
+class PdfPrinter < Printer
+  def print (file)
+    #
+  end
+
+  def get_meta_info (file)
+    #
+  end
+end
+
+class MSWordPrinter < Printer
+  def print (file)
+    #
+  end
+
+  def get_meta_info (file)
+    #
+  end
+end
+```
+
+## Language features
+
+In a lot of cases, avoiding conditions is easy, because there are language constructs which can do the same thing. Most of the time these constructs are present for a important reason - it's a better way to do things. Let's look at several of them. I used Ruby in the examples, but this applicable to any good OO language.
+
+### Filter data
+Any decent OO languages has means to easily filter data, you don't need ifs to do that:
+
+```ruby
+# I slept during the functional classes
+collection.each {|item| result << item if item.condition? }
+```
+
+A very stupid example, but it should make the point. What we should have used is:
+
+```ruby
+result = collection.select(&:condition?)
+```
+
+### Processing errors
+If you got a method which can fail, you might be tempted to do something like this:
+
+```ruby
+result = do_something()
+if result == nil
+  #something is wrong
+else
+  #process
+end
+```
+
+It is better that you method raises errors in case something goes wrong. It improves readability, adds meaning, and describes what the system actually does:
+
+```ruby
+begin
+  result = do_something()
+rescue FileSystemError
+  #disk is full
+rescue NetworkError
+  #no internet connection
+end
+```
+
+### Default values
+You want to keep a default value for a variable unless it is assigned, you might want to do something like this:
+
+```ruby
+def method (object)
+  if object.property
+    param = object.property
+  else
+    param = default_param
+  end
+end
+```
+
+You did repeat yourself, wrote 3 lines, what you should have written is:
+
+```ruby
+def method (object)
+  param = object.property || default_param
+end
+```
+
+## Testing
+
+One of things which can suggest that things got to fishy in your implementation, is how hard is to test your objects. Classes with a lot of conditions require a lot of test cases and a lot of setup code. If your behaviour were properly isolated and subclassed, then your test would be very simple and with minimum setup code.
+
+By having small, specific objects, each time you have to test a class, you are testing an aspect of you system, not a behaviour.
+
+# Conclusion
+The idea of if-less programming is very interesting and provokes to thought. As any other good idea, it should be not taken to extremes. Any language construct must be used when it is the more reasonable thing to do. I like the fact that the presence of if-s can indicate a bad OO design.

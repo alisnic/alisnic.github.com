@@ -1,0 +1,10 @@
+title:        "Andrei Lisnic"
+tagline:      "computer talk by @tmm1"
+url:          http://alisnic.github.io
+author:
+  name:       "Andrei Lisnic"
+  email:      "andrei.lisnic@gmail.com"
+markdown:     redcarpet
+permalink:    /posts/:title
+pygments:     true
+paginate:     5

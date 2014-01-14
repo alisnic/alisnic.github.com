@@ -1,0 +1,29 @@
+---
+layout: post
+title: Unity performance tweaks
+category: posts
+---
+
+**Prerequisites:**
+You want to use unity, we let the unity flame wars aside, and you don't want to
+use [LLVMpipe][1].
+
+1. Remove useless lens
+
+```bash
+sudo apt-get autoremove unity-lens-videos unity-lens-photos \
+  unity-lens-gwibber unity-lens-shopping unity-lens-music
+```
+
+2. Install compiz config
+
+```bash
+sudo apt-get install compizconfig-settings-manager
+```
+
+3. Open `compizconfig-settings-manager`
+4. Uncheck "Animations" and "Fade windows"
+5. Open "OpenGL", and set the texture filter to "Fast"
+6. Enjoy
+
+[1]: https://www.google.com/search?q=unity+llvmpipe

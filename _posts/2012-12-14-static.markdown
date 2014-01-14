@@ -1,0 +1,9 @@
+---
+layout: post
+title: Make it static
+category: posts
+---
+
+Finally, I made a static blog which actually works. 
+
+Thanks to [Zach Holman](http://zachholman.com/) for [open sourcing his previous Jekyll blog](http://zachholman.com/posts/left/).

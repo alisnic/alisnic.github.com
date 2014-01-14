@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+ <title>Andrei Lisnic</title>
+ <link href="http://alisnic.github.io/atom.xml" rel="self"/>
+ <link href="http://alisnic.github.io/"/>
+ <updated>2014-01-14T16:30:36+02:00</updated>
+ <id>http://alisnic.github.io</id>
+ <author>
+   <name>Andrei Lisnic</name>
+   <email>andrei.lisnic@gmail.com</email>
+ </author>
+
+ 
+ <entry>
+   <title>Log filename, line and function name in ruby automatically</title>
+   <link href="http://alisnic.github.io/posts/ruby-logs"/>
+   <updated>2013-05-11T00:00:00+03:00</updated>
+   <id>http://alisnic.github.io/posts/ruby-logs</id>
+   <content type="html">&lt;p&gt;Suppose you have a app with a logger:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;ruby language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;logger&amp;#39;&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;module&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;MyApp&lt;/span&gt;
+  &lt;span class=&quot;no&quot;&gt;Log&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Logger&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;STDOUT&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Foo&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;hello&lt;/span&gt;
+      &lt;span class=&quot;no&quot;&gt;Log&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;info&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;test message&amp;quot;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;no&quot;&gt;MyApp&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Foo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;hello&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;When you run it, everything is as usual:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;console language-console&quot; data-lang=&quot;console&quot;&gt;&lt;span class=&quot;go&quot;&gt;I, [2013-05-11T21:26:40.701590 #4326]  INFO -- : test message&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Now imagine you have a ton of such messages flooding the output. Wouldn&amp;#39;t be
+nice if the logger would also include the filename, the line and the function
+name where the Log output was issued? Well, you can do that in ruby:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;ruby language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;logger&amp;#39;&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;module&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;MyApp&lt;/span&gt;
+  &lt;span class=&quot;no&quot;&gt;Log&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Logger&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;STDOUT&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;no&quot;&gt;Log&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;formatter&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;proc&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;severity&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;datetime&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;progname&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;msg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;severity&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;caller&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;msg&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Foo&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;hello&lt;/span&gt;
+      &lt;span class=&quot;no&quot;&gt;Log&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;info&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;test message&amp;quot;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;no&quot;&gt;MyApp&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Foo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;hello&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;If we will run this, we&amp;#39;ll see the following output:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;console language-console&quot; data-lang=&quot;console&quot;&gt;&lt;span class=&quot;go&quot;&gt;INFO log_test.rb:14:in `hello&amp;#39;: test message&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1&gt;How it is done&lt;/h1&gt;
+
+&lt;p&gt;Ruby has a magic array - &lt;code&gt;caller&lt;/code&gt;. It contains the ordered list of the files, lines,
+and functions being executed.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;ruby language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Foo&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;baz&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;hello&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;hello&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;p&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;caller&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;no&quot;&gt;Foo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;baz&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#=&amp;gt; [&amp;quot;/home/andrei/Temp/log_test.rb:21:in `baz&amp;#39;&amp;quot;, &amp;quot;/home/andrei/Temp/log_test.rb:29:in `&amp;lt;main&amp;gt;&amp;#39;&amp;quot;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;We used that magic array for our logger formatter, and we used its 4th element
+because the code which calls the logger is 4 levels above in call stack relative
+to formatter proc.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;: If you use a different version of logger, you might need to use a
+different number, not 4. In any case, inspect the caller array and see at which
+position in that array your code info is located.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Unity performance tweaks</title>
+   <link href="http://alisnic.github.io/posts/unity-fly"/>
+   <updated>2013-03-20T00:00:00+02:00</updated>
+   <id>http://alisnic.github.io/posts/unity-fly</id>
+   <content type="html">&lt;p&gt;&lt;strong&gt;Prerequisites:&lt;/strong&gt;
+You want to use unity, we let the unity flame wars aside, and you don&amp;#39;t want to
+use &lt;a href=&quot;https://www.google.com/search?q=unity+llvmpipe&quot;&gt;LLVMpipe&lt;/a&gt;.&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Remove useless lens&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash language-bash&quot; data-lang=&quot;bash&quot;&gt;sudo apt-get autoremove unity-lens-videos unity-lens-photos &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+  unity-lens-gwibber unity-lens-shopping unity-lens-music
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ol&gt;
+&lt;li&gt;Install compiz config&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash language-bash&quot; data-lang=&quot;bash&quot;&gt;sudo apt-get install compizconfig-settings-manager
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ol&gt;
+&lt;li&gt;Open &lt;code&gt;compizconfig-settings-manager&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Uncheck &amp;quot;Animations&amp;quot; and &amp;quot;Fade windows&amp;quot;&lt;/li&gt;
+&lt;li&gt;Open &amp;quot;OpenGL&amp;quot;, and set the texture filter to &amp;quot;Fast&amp;quot;&lt;/li&gt;
+&lt;li&gt;Enjoy&lt;/li&gt;
+&lt;/ol&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Vim hotkey to run current file depending on the filetype</title>
+   <link href="http://alisnic.github.io/posts/vim-run-hotkey"/>
+   <updated>2013-03-11T00:00:00+02:00</updated>
+   <id>http://alisnic.github.io/posts/vim-run-hotkey</id>
+   <content type="html">&lt;p&gt;So, here&amp;#39;s the thing, you&amp;#39;re editing a file and you need to run it. And, since
+you are in vim, you might want to be clever and do something like
+&lt;code&gt;:map &amp;lt;F5&amp;gt; :!ruby %&amp;lt;cr&amp;gt;&lt;/code&gt; on the fly. But, you can&amp;#39;t ever be clever enough in vim.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://vimdoc.sourceforge.net/htmldoc/autocmd.html&quot;&gt;Autocmd&lt;/a&gt; is a feature of vim which allows to execute a command when an
+event occurs. In our context, we need vim to map a key to execute the current
+file in ruby if it is a ruby script. All we need is to add the following statement
+to &lt;code&gt;.vimrc&lt;/code&gt;:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;autocmd FileType ruby nmap &amp;lt;F5&amp;gt; :!ruby %&amp;lt;cr&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This means that when the &amp;quot;FileType&amp;quot; variable in vim will be set to ruby, the
+key &lt;code&gt;F5&lt;/code&gt; will be mapped to run current file with ruby. This is very convenient
+because usually that variable is set by syntax detectors.&lt;/p&gt;
+
+&lt;p&gt;Then, we can extend this and add new file types:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;vim language-vim&quot; data-lang=&quot;vim&quot;&gt;autocmd &lt;span class=&quot;nb&quot;&gt;FileType&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;ruby&lt;/span&gt; nmap &lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt;F5&lt;span class=&quot;p&quot;&gt;&amp;gt;&lt;/span&gt; :&lt;span class=&quot;p&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;ruby&lt;/span&gt; %&lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;cr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;gt;&lt;/span&gt;
+autocmd &lt;span class=&quot;nb&quot;&gt;FileType&lt;/span&gt; coffee nmap &lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt;F5&lt;span class=&quot;p&quot;&gt;&amp;gt;&lt;/span&gt; :&lt;span class=&quot;p&quot;&gt;!&lt;/span&gt;coffee %&lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;cr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Neat, huh? Based on the file type, vim will execute the current file in the
+corresponding interpreter.&lt;/p&gt;
+
+&lt;h3&gt;Taking it a bit further&lt;/h3&gt;
+
+&lt;p&gt;Also, it would be nice to save the file each time you want to run it, and also
+measure the time it took to run. For that, you will need a function:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;vim language-vim&quot; data-lang=&quot;vim&quot;&gt;&lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; RunWith &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;command&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  execute &lt;span class=&quot;s2&quot;&gt;&amp;quot;w&amp;quot;&lt;/span&gt;
+  execute &lt;span class=&quot;s2&quot;&gt;&amp;quot;!clear;time &amp;quot;&lt;/span&gt; . &lt;span class=&quot;k&quot;&gt;a&lt;/span&gt;:command . &lt;span class=&quot;s2&quot;&gt;&amp;quot; &amp;quot;&lt;/span&gt; . expand&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;%&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;endfunction&lt;/span&gt;
+
+autocmd &lt;span class=&quot;nb&quot;&gt;FileType&lt;/span&gt; coffee nmap &lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt;F5&lt;span class=&quot;p&quot;&gt;&amp;gt;&lt;/span&gt; :&lt;span class=&quot;k&quot;&gt;call&lt;/span&gt; RunWith&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;coffee&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&amp;lt;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;cr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;gt;&lt;/span&gt;
+autocmd &lt;span class=&quot;nb&quot;&gt;FileType&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;ruby&lt;/span&gt;   nmap &lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt;F5&lt;span class=&quot;p&quot;&gt;&amp;gt;&lt;/span&gt; :&lt;span class=&quot;k&quot;&gt;call&lt;/span&gt; RunWith&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;ruby&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&amp;lt;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;cr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;RunWith&lt;/code&gt; is a function which accepts the executable name which will be used to
+execute the current file. It will save the file before executing it, and will
+clear the console screen.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Pro tip:&lt;/strong&gt; auto map a rspec run hotkey.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;vim language-vim&quot; data-lang=&quot;vim&quot;&gt;autocmd &lt;span class=&quot;nb&quot;&gt;BufRead&lt;/span&gt; *_spec.rb nmap &lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt;F6&lt;span class=&quot;p&quot;&gt;&amp;gt;&lt;/span&gt; :&lt;span class=&quot;k&quot;&gt;w&lt;/span&gt;\&lt;span class=&quot;p&quot;&gt;|!&lt;/span&gt;clear &amp;amp;&amp;amp; rspec % &lt;span class=&quot;p&quot;&gt;--&lt;/span&gt;format documentation &lt;span class=&quot;p&quot;&gt;--&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;color&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;cr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;(each time a file with &lt;code&gt;_spec.rb&lt;/code&gt; is loaded, the editor will map the &lt;code&gt;F6&lt;/code&gt; key
+to execute the rspec on the current file)&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Fast Rails app prototyping</title>
+   <link href="http://alisnic.github.io/posts/rails-prototyping"/>
+   <updated>2013-01-23T00:00:00+02:00</updated>
+   <id>http://alisnic.github.io/posts/rails-prototyping</id>
+   <content type="html">&lt;p&gt;There are often times when you have an idea that will refuse to leave your mind.
+It is the most beautiful sensation you can ever have.
+As an any other idea, you must first see it shape before you can throw it away.
+At this point it is the most important to establish a very effective and noise free channel between your idea and its implementation.
+I will describe what I use and what I do to quickly make small Rails apps, and what I use for it.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;text language-text&quot; data-lang=&quot;text&quot;&gt;git clone git@github.com:alisnic/naked_rail.git myapp
+cd myapp
+rm -rf .git
+git init &amp;amp;&amp;amp; git add . &amp;amp;&amp;amp; git commit -a -m &amp;quot;initial commit&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1&gt;Prototyping&lt;/h1&gt;
+
+&lt;p&gt;I use an &lt;a href=&quot;https://github.com/alisnic/naked_rail&quot;&gt;app template&lt;/a&gt; for all my new apps. As many things that I created, it was done to write less, and includes the following libs:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;http://haml.info/&quot;&gt;HAML&lt;/a&gt; + &lt;a href=&quot;http://sass-lang.com/&quot;&gt;SASS&lt;/a&gt; + &lt;a href=&quot;http://coffeescript.org/&quot;&gt;CoffeeScript&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://twitter.github.com/bootstrap/&quot;&gt;Twitter Bootstrap&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;PagesController which renders its action. To add a view, all I need to do is to create a &lt;code&gt;foo.haml&lt;/code&gt; file in &lt;code&gt;app/views/pages&lt;/code&gt;, and it will be accessible at &lt;code&gt;/pages/foo&lt;/code&gt;. No new routes, no new controllers. You first idea is static.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/guard/guard-livereload&quot;&gt;guard-livereload&lt;/a&gt;. I have a vim window alongside the browser on my FullHD monitor. Every time I change the code, the page reloads automatically. This is &lt;strong&gt;very&lt;/strong&gt; convenient, especially when writing the markup.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/alisnic/naked_rail/blob/master/app/views/application/_flash_messages.html.haml&quot;&gt;flash&lt;/a&gt; and &lt;a href=&quot;https://github.com/alisnic/naked_rail/blob/master/app/views/application/_validation_errors.html.haml&quot;&gt;error&lt;/a&gt; partials. To show a model validation errors in a form, all I have to do is add &lt;code&gt;render &amp;#39;validation_errors&amp;#39;, :resource =&amp;gt; @entity&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/charliesome/better_errors&quot;&gt;better_errors&lt;/a&gt;. Really cool gem, makes breaking things pleasant. It will open a ruby shell in the context of the error in the browser.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1&gt;Growing&lt;/h1&gt;
+
+&lt;p&gt;If my idea proved strong and stable, I have the tools to grow on the code I made in the prototyping step, and by that I mean I have all the testing tools I need:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;http://rspec.info/&quot;&gt;Rspec&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/thoughtbot/capybara-webkit&quot;&gt;Capybara-webkit&lt;/a&gt; (can execute JS) + &lt;a href=&quot;https://github.com/alisnic/naked_rail/blob/master/features/step_definitions/navigation_steps.rb&quot;&gt;navigation steps&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/thoughtbot/shoulda&quot;&gt;Shoulda&lt;/a&gt;. Testing models is plain easy and straightforward. The main idea - don&amp;#39;t test ActiveRecord, it has been tested for you. (ex: &lt;code&gt;it { should belong_to(:user) }&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/thoughtbot/factory_girl&quot;&gt;FactoryGirl&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1&gt;Final note&lt;/h1&gt;
+
+&lt;p&gt;I have presented a set of tools and practices to create a Rails app fast. As many other things out there, it is highly opinionated. Also, the repo which I created is not licensed in any way, so do whatever the hell to want to do with it.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>If-less programming</title>
+   <link href="http://alisnic.github.io/posts/ifless"/>
+   <updated>2012-12-28T00:00:00+02:00</updated>
+   <id>http://alisnic.github.io/posts/ifless</id>
+   <content type="html">&lt;p&gt;I recently watched a Google tech talk called &lt;a href=&quot;http://www.youtube.com/watch?v=4F72VULWFvc&amp;amp;feature=channel&quot;&gt;&amp;quot;The Clean Code Talks -- Inheritance, Polymorphism, &amp;amp; Testing&amp;quot;&lt;/a&gt;, and I was amazed how &lt;strong&gt;Misko Hevery&lt;/strong&gt; explained that (a lot of) ifs can be a smelly thing in a Object Oriented language.&lt;/p&gt;
+
+&lt;p&gt;Being fascinated by the idea, I decided to &lt;a href=&quot;https://www.google.com/search?q=programming+without+ifs&quot;&gt;google&lt;/a&gt; it, and I was surprised that if-less programming is a pretty popular topic. I noticed &lt;a href=&quot;http://stackoverflow.com/questions/1937362/can-you-write-any-algorithm-without-an-if-statement&quot;&gt;a response to a stackoverflow&lt;/a&gt; question which stated:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;An “if” statement is an abomination in an Object Oriented language.
+Why? Well, an OO language is composed of classes, objects and methods, and an “if” statement is inescapably none of those. You can’t write “if” in an OO way. It shouldn&amp;#39;t exist. Conditional execution, like everything else, should be a method. A method of what? Boolean.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Any Smalltalk-er knows about this thing, because there are no if statements in Smalltalk. In this language, the Boolean class has &lt;code&gt;ifTrue&lt;/code&gt; and &lt;code&gt;ifFalse&lt;/code&gt; methods, which accept blocks which will be executed depending on the value of the boolean expression. This feels at least, a bit weird and unclear to me, so I decided to investigate.&lt;/p&gt;
+
+&lt;h1&gt;The Reasons&lt;/h1&gt;
+
+&lt;p&gt;It is obvious that we can&amp;#39;t avoid conditionals, especially when comparing primitive data types. But most of the time it is not considered a good practice to use ifs in a Object-Oriented language. So what is really wrong with conditionals in a Object Oriented language?&lt;/p&gt;
+
+&lt;h2&gt;Polymorphism&lt;/h2&gt;
+
+&lt;p&gt;The main and most strong idea which I got from if-less programming is simple: If you use a lot of if statements, you&amp;#39;re doing polymorphism wrong. Here is a simple (and dumb) example:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;ruby language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Printer&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;type&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;when&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:docx&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;print_office_word&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;when&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:pdf&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;print_pdf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Notice here that I used a &lt;code&gt;switch&lt;/code&gt; statement, it&amp;#39;s basically the same as using ifs. But let&amp;#39;s concentrate on the example. Why this class is bad? Well, for several reasons.&lt;/p&gt;
+
+&lt;h3&gt;Ctrl-C, Ctrl-V&lt;/h3&gt;
+
+&lt;p&gt;If the behaviour in the described object is complex enough, this switch will pop up all over the place. Image you will add a new method to the &lt;code&gt;Printer&lt;/code&gt; class:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;ruby language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;get_meta_info&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# gotta do that switch here&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# good thing I have the clipboard&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Besides the same &lt;code&gt;switch&lt;/code&gt;, you will have to add methods to process each file type which your &lt;code&gt;Printer&lt;/code&gt; knows about.&lt;/p&gt;
+
+&lt;h3&gt;Extensibility&lt;/h3&gt;
+
+&lt;p&gt;It is very hard to extend code which has a lot of branches, because chances are that the difference in behaviour between these branches is pretty big.&lt;/p&gt;
+
+&lt;h3&gt;The right way&lt;/h3&gt;
+
+&lt;p&gt;To avoid unnecessary conditions and headaches, our &lt;code&gt;Printer&lt;/code&gt; class should look like this:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;ruby language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Printer&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;get_meta_info&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;PdfPrinter&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Printer&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;#&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;get_meta_info&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;#&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;MSWordPrinter&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Printer&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;#&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;get_meta_info&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;#&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;Language features&lt;/h2&gt;
+
+&lt;p&gt;In a lot of cases, avoiding conditions is easy, because there are language constructs which can do the same thing. Most of the time these constructs are present for a important reason - it&amp;#39;s a better way to do things. Let&amp;#39;s look at several of them. I used Ruby in the examples, but this applicable to any good OO language.&lt;/p&gt;
+
+&lt;h3&gt;Filter data&lt;/h3&gt;
+
+&lt;p&gt;Any decent OO languages has means to easily filter data, you don&amp;#39;t need ifs to do that:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;ruby language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;c1&quot;&gt;# I slept during the functional classes&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;collection&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;item&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;item&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;item&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;condition?&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;A very stupid example, but it should make the point. What we should have used is:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;ruby language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;result&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;collection&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;select&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:condition?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;Processing errors&lt;/h3&gt;
+
+&lt;p&gt;If you got a method which can fail, you might be tempted to do something like this:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;ruby language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;result&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;do_something&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;nil&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;#something is wrong&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;#process&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;It is better that you method raises errors in case something goes wrong. It improves readability, adds meaning, and describes what the system actually does:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;ruby language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;begin&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;do_something&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;rescue&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;FileSystemError&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;#disk is full&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;rescue&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;NetworkError&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;#no internet connection&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;Default values&lt;/h3&gt;
+
+&lt;p&gt;You want to keep a default value for a variable unless it is assigned, you might want to do something like this:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;ruby language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;method&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;object&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;property&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;param&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;object&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;property&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;param&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;default_param&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;You did repeat yourself, wrote 3 lines, what you should have written is:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;ruby language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;method&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;param&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;object&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;property&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;default_param&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;Testing&lt;/h2&gt;
+
+&lt;p&gt;One of things which can suggest that things got to fishy in your implementation, is how hard is to test your objects. Classes with a lot of conditions require a lot of test cases and a lot of setup code. If your behaviour were properly isolated and subclassed, then your test would be very simple and with minimum setup code.&lt;/p&gt;
+
+&lt;p&gt;By having small, specific objects, each time you have to test a class, you are testing an aspect of you system, not a behaviour.&lt;/p&gt;
+
+&lt;h1&gt;Conclusion&lt;/h1&gt;
+
+&lt;p&gt;The idea of if-less programming is very interesting and provokes to thought. As any other good idea, it should be not taken to extremes. Any language construct must be used when it is the more reasonable thing to do. I like the fact that the presence of if-s can indicate a bad OO design.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>On logic in a Rails app</title>
+   <link href="http://alisnic.github.io/posts/rails-logic"/>
+   <updated>2012-12-24T00:00:00+02:00</updated>
+   <id>http://alisnic.github.io/posts/rails-logic</id>
+   <content type="html">&lt;p&gt;Recently, Grant Ammons wrote &lt;a href=&quot;http://gammons.github.com/architecture/2012/12/22/where-the-logic-hides/&quot;&gt;a nice article&lt;/a&gt; about where logic should lie in a Rails app. I would like to complement his opinion, and probably add some real life arguments to it.&lt;/p&gt;
+
+&lt;p&gt;Grant extracted logic from the controller, and put it in a separate object, which I also do most of the time. However, a user named DHH (which probably is DHH) said:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;So all you&amp;#39;ve done here is extract the work of the controller action into a separate object. This adds needless indirection, makes the code base harder to follow, and is completely unnecessary.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;I strongly disagree, and I have good reasons for it.&lt;/p&gt;
+
+&lt;p&gt;You know what makes the code base hard to follow? Fat controllers with logic in them. I worked on a Rails app with Controllers of 800 lines of code, &lt;strong&gt;it. is. a. freaking. nightmare.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h2&gt;My approach&lt;/h2&gt;
+
+&lt;p&gt;I look at Rails as web presentation layer, it makes my app work in the browser. This has some consequences to my codebase:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;data-only models (no logic should be in models)&lt;/li&gt;
+&lt;li&gt;logicless controllers (no logic should be there either)&lt;/li&gt;
+&lt;li&gt;anything else is in single-responsibility objects in &lt;code&gt;app/domain/&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;You might think that this is a refactor pattern, and you are right. And you might say that this unnecessary to do from the start, and you may also be right. But the cost of creating a file and moving behaviour there is exactly 0, but the benefits are there from day 1.&lt;/p&gt;
+
+&lt;h2&gt;Why I do it&lt;/h2&gt;
+
+&lt;h3&gt;Fast tests&lt;/h3&gt;
+
+&lt;p&gt;The least I am coupled to Rails, the fastest my tests are. Currently, on a medium Rails project my tests run 2-3 seconds, where 90% of the time is wasted to boot rails and test models.&lt;/p&gt;
+
+&lt;p&gt;I don&amp;#39;t test my controllers, because they have no logic in them. My methods in controllers don&amp;#39;t have more than 4-5 lines of code.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;ruby language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;RatingsController&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationController&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;create&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;success&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;RatesBusiness&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;add_rating&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:business_id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                                       &lt;span class=&quot;n&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:score&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                                       &lt;span class=&quot;n&quot;&gt;current_user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;render&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;json&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;success&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;success&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;RatesBusiness&lt;/code&gt; has some foursquare-related logic besides just creating a entry in the database. Using this approach, I have a &lt;em&gt;very&lt;/em&gt; fast TDD flow, because most of the time I don&amp;#39;t need Rails to test my logic. (any dependency to models is stubbed, as any other external dependency).&lt;/p&gt;
+
+&lt;p&gt;Your controller only connects your logic to the web interface.&lt;/p&gt;
+
+&lt;h3&gt;Code and forget&lt;/h3&gt;
+
+&lt;p&gt;If you have a well tested functionality that works, you don&amp;#39;t need see it in front of you when you code in your application. This is where single-responsibility objects kick in, I TDD them one time, I know about their existence and what their interface is, I will not ever see their code again.&lt;/p&gt;
+
+&lt;h3&gt;Framework agnostic&lt;/h3&gt;
+
+&lt;p&gt;When your app logic is not coupled with Rails, you do not depend on it, its version, or interface. Isolating some functionality to a service is a matter of moving some files around.&lt;/p&gt;
+
+&lt;h3&gt;Reduced stress and debug times&lt;/h3&gt;
+
+&lt;p&gt;Most of my classes fit in one screen, and have descriptive names as &lt;code&gt;CategorizesCampagins&lt;/code&gt; or &lt;code&gt;FiltersBusinesses&lt;/code&gt;, which makes debugging them very, very easy and pleasant. I don&amp;#39;t need to scroll the hell out of my screen to understand how an isolated piece of functionality works.&lt;/p&gt;
+
+&lt;h2&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Rails is just a framework to make your app work on the web, don&amp;#39;t mix your logic with rails-y stuff. Your app domain should be defined anywhere besides Rails views, controllers, and models.&lt;/p&gt;
+
+&lt;h2&gt;Inspiration&lt;/h2&gt;
+
+&lt;p&gt;First, and most influential person for me is &lt;a href=&quot;https://twitter.com/garybernhardt&quot;&gt;Gary Bernhardt&lt;/a&gt; and his screencast series &lt;a href=&quot;https://www.destroyallsoftware.com/screencasts&quot;&gt;destroyallsoftware&lt;/a&gt;. If you want to learn isolated testing - watch this guy, he is amazing. (He even test-drives bash scripts :D)&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://blog.codeclimate.com/blog/2012/11/28/your-objects-the-unix-way/&quot;&gt;Your objects the UNIX way&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Also, my approach was influenced by &lt;a href=&quot;http://www.youtube.com/watch?v=CGN4RFkhH2M&quot;&gt;Hexagonal Rails&lt;/a&gt; concept.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Make it static</title>
+   <link href="http://alisnic.github.io/posts/static"/>
+   <updated>2012-12-14T00:00:00+02:00</updated>
+   <id>http://alisnic.github.io/posts/static</id>
+   <content type="html">&lt;p&gt;Finally, I made a static blog which actually works. &lt;/p&gt;
+
+&lt;p&gt;Thanks to &lt;a href=&quot;http://zachholman.com/&quot;&gt;Zach Holman&lt;/a&gt; for &lt;a href=&quot;http://zachholman.com/posts/left/&quot;&gt;open sourcing his previous Jekyll blog&lt;/a&gt;.&lt;/p&gt;
+</content>
+ </entry>
+ 
+
+</feed>

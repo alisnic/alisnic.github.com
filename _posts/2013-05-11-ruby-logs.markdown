@@ -1,0 +1,86 @@
+---
+layout: post
+title: Log filename, line and function name in ruby automatically
+category: posts
+---
+
+Suppose you have a app with a logger:
+
+```ruby
+require 'logger'
+
+module MyApp
+  Log = Logger.new(STDOUT)
+
+  class Foo
+    def self.hello
+      Log.info "test message"
+    end
+  end
+end
+
+MyApp::Foo.hello
+```
+
+
+When you run it, everything is as usual:
+
+```console
+I, [2013-05-11T21:26:40.701590 #4326]  INFO -- : test message
+```
+
+Now imagine you have a ton of such messages flooding the output. Wouldn't be
+nice if the logger would also include the filename, the line and the function
+name where the Log output was issued? Well, you can do that in ruby:
+
+```ruby
+require 'logger'
+
+module MyApp
+  Log = Logger.new(STDOUT)
+  Log.formatter = proc { |severity, datetime, progname, msg|
+    "#{severity} #{caller[4]} #{msg}\n"
+  }
+
+  class Foo
+    def self.hello
+      Log.info "test message"
+    end
+  end
+end
+
+MyApp::Foo.hello
+```
+
+If we will run this, we'll see the following output:
+
+```console
+INFO log_test.rb:14:in `hello': test message
+```
+
+# How it is done
+
+Ruby has a magic array - `caller`. It contains the ordered list of the files, lines,
+and functions being executed.
+
+```ruby
+class Foo
+  def self.baz
+    hello
+  end
+
+  def self.hello
+    p caller
+  end
+end
+
+Foo.baz #=> ["/home/andrei/Temp/log_test.rb:21:in `baz'", "/home/andrei/Temp/log_test.rb:29:in `<main>'"]
+```
+
+We used that magic array for our logger formatter, and we used its 4th element
+because the code which calls the logger is 4 levels above in call stack relative
+to formatter proc.
+
+__Note__: If you use a different version of logger, you might need to use a
+different number, not 4. In any case, inspect the caller array and see at which
+position in that array your code info is located.
