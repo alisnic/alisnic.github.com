@@ -7,4 +7,3 @@ author:
 markdown:     redcarpet
 permalink:    /posts/:title
 pygments:     true
-paginate:     5
