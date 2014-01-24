@@ -4,6 +4,8 @@ title: NYNY 3.2 - a micro web framework meets the Rails' router
 category: posts
 ---
 
+_Summary_: [New York, New York][nyny] 3.2 uses the Rails' router.
+
 As a web developer that writes in Rails, I got a lot of interests in the
 internals of web frameworks. Rails, however, is pretty big, and a person can
 get lost in its source code.
