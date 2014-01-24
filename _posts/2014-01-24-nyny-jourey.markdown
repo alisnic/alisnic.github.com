@@ -16,7 +16,7 @@ clone at that time.
 
 Time has passed, and I spend all my free coding resources to hack on NYNY and
 to experiment with it. During this period I also started using NYNY to prototype
-any ideas I had for web apps. It did well as a framework, and I never
+any ideas I had for web apps, slowly improving it. It did well as a framework, and I never
 stopped using it.
 
 However, I was missing something. I was missing Rails' routing. But I was not
