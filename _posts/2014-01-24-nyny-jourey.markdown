@@ -34,7 +34,7 @@ for the path string:
 ```ruby
 class App < NYNY::App
   get '/:foo(/:bar)' do
-    'Hello World!'
+    "Hello #{params[:foo]} #{params[:bar]}!"
   end
 end
 ```
