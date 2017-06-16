@@ -1,9 +1,8 @@
 title:        "Andrei Lisnic"
-tagline:      "computer talk by @tmm1"
+tagline:      "random thoughts by @andrei_lisnic"
 url:          http://alisnic.github.io
 author:
   name:       "Andrei Lisnic"
   email:      "andrei.lisnic@gmail.com"
-markdown:     redcarpet
+markdown:     kramdown
 permalink:    /posts/:title
-pygments:     true
