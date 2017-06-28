@@ -7,8 +7,8 @@ category: posts
 If you, like me, get interested in tricky programming questions found randomly
 on twitter, here's a nice one for you:
 
-Suppose you have a Ruby class with a method and another other methods that call
-it:
+Suppose you have a Ruby class with a method and another with other methods that
+call it:
 
 ```ruby
 class Foo
@@ -47,14 +47,14 @@ end
 class Foo
   def bar
     Guardian.ensure_method_called!("test.rb:21")
-    :ok
+    "bar"
   end
 end
 
 class Work
   def execute
     # calling Foo.new.bar here should work
-    Foo.new.bar
+    Foo.new.bar + " from execute"
   end
 
   def other_method
@@ -70,7 +70,8 @@ puts Work.new.other_method
 Executing it, we get the following output:
 
 ```
-ok
+$ ruby test.rb
+bar from execute
 test.rb:6:in `ensure_method_called!': nice try lol (ArgumentError)
         from test.rb:13:in `bar'
         from test.rb:26:in `other_method'
@@ -92,7 +93,7 @@ like this:
 class Foo
   def bar
     Guardian.ensure_instance_method_called!(Work, :execute)
-    :ok
+    "bar"
   end
 end
 ```
@@ -274,3 +275,7 @@ test.rb:18:in `ensure_instance_method_called!': nice try lol (ArgumentError)
 
         shell returned 1
 ```
+
+Here's a link to a gist with the whole source in case you want to play with it:
+[https://gist.github.com/alisnic/1ccc6e1357e0365ee4ed8655f2e1d7dd](https://gist.github.com/alisnic/1ccc6e1357e0365ee4ed8655f2e1d7dd)
+
