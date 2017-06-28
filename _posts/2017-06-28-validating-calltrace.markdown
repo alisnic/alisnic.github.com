@@ -30,8 +30,9 @@ end
 The requirement is simple - enforce that `Foo#bar` is ONLY called from inside
 `Work#execute`, not from elsewhere.
 
-First thought that comes to mind is to use magic "caller" array in Ruby to
-make sure that a given location is in the callstack:
+First thought that comes to mind is to use magic
+[caller](https://ruby-doc.org/core-2.4.1/Kernel.html#method-i-caller)
+array in Ruby to make sure that a given location is in the callstack:
 
 ```ruby
 # test.rb
