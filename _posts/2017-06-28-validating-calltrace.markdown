@@ -276,6 +276,13 @@ test.rb:18:in `ensure_instance_method_called!': nice try lol (ArgumentError)
         shell returned 1
 ```
 
+So there you go, we have a half-baked solution for a problem that barely exists!
+That was fun! In all seriousness, if we were to implement this properly, we would
+take a different approach. There is a category of tools that are perfectly aware
+of what code calls what functions - profilers. So a "production" implementation
+of this task would be to use a ruby tracing function to track function calls.
+
 Here's a link to a gist with the whole source in case you want to play with it:
 [https://gist.github.com/alisnic/1ccc6e1357e0365ee4ed8655f2e1d7dd](https://gist.github.com/alisnic/1ccc6e1357e0365ee4ed8655f2e1d7dd)
+
 
