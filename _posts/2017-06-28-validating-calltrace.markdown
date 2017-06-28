@@ -7,7 +7,7 @@ category: posts
 If you, like me, get interested in tricky programming questions found randomly
 on twitter, here's a nice one for you:
 
-Suppose you have a Ruby class with a method and another with other methods that
+Suppose you have a Ruby class with a method and another class with other methods that
 call it:
 
 ```ruby
