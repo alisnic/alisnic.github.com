@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Ensuring that a ruby method is called from a specific location
+title: Enforcing that a ruby method is called from a specific location
 category: posts
 ---
 
