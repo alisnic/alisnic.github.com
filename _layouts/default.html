@@ -11,7 +11,6 @@
 
     <!-- CSS -->
     <link rel="stylesheet" href="/public/css/hyde.css">
-    <link rel="stylesheet" href="/public/css/syntax.css">
 
     <!-- RSS -->
     <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
@@ -19,23 +18,21 @@
   <body>
 
     <header class="masthead">
-      <div class="masthead-inner">
-        <h1><a href="/">Andrei Lisnic</a></h1>
-        <ul>
-          <li><a href="https://github.com/alisnic" >github</a></li>
-          <li><a href="https://twitter.com/andrei_lisnic" >twitter</a></li>
-          <li><a href="http://www.linkedin.com/in/alisnic" >linkedin</a></li>
-          <li><a href="/atom.xml" >rss</a></li>
-        </ul>
-        <h3>Projects</h3>
-        <ul>
-          <li><a href="/nyny/">New York, New York</a></li>
-          <li><a href="https://github.com/alisnic/stackprof-webnav">StackProf Web navigator</a></li>
-        </ul>
-      </div>
+      <h1><a href="/">Andrei Lisnic</a></h1>
+      <ul class="inline">
+        <li><a href="https://github.com/alisnic" >github</a></li>
+        <li><a href="https://twitter.com/andrei_lisnic" >twitter</a></li>
+        <li><a href="http://www.linkedin.com/in/alisnic" >linkedin</a></li>
+        <li><a href="/atom.xml" >rss</a></li>
+      </ul>
+      <h1>Projects</h3>
+      <ul>
+        <li><a href="/nyny/">New York, New York</a></li>
+        <li><a href="https://github.com/alisnic/stackprof-webnav">StackProf Web navigator</a></li>
+      </ul>
     </header>
 
-    <div class="content container">
+    <div class="content">
       {{ content }}
     </div>
 
