@@ -5,6 +5,6 @@ author:
   name:       "Andrei Lisnic"
   email:      "andrei.lisnic@gmail.com"
 markdown:     kramdown
-permalink:    /posts/:title
+permalink:    /posts/:title/
 plugins:
   - jekyll-feed
