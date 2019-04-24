@@ -1,6 +1,6 @@
-title:        "Andrei Lisnic"
+title:        "Andrei Lisnic blog"
 tagline:      "random thoughts by @andrei_lisnic"
-url:          http://alisnic.github.io
+url:          https://alisnic.github.io
 author:
   name:       "Andrei Lisnic"
   email:      "andrei.lisnic@gmail.com"
@@ -8,3 +8,5 @@ markdown:     kramdown
 permalink:    /posts/:title/
 plugins:
   - jekyll-feed
+  - jekyll-seo-tag
+  - jekyll-sitemap
