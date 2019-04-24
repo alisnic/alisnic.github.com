@@ -1,23 +1,34 @@
 ---
 layout: default
 ---
-<header class="masthead">
-  <h1>Andrei Lisnic</h1>
-  <ul class="inline">
-    <li><a href="https://github.com/alisnic" >github</a></li>
+<style>
+  .header {
+    text-align: center;
+    border-bottom: 1px solid #eee;
+  }
+  .avatar {
+    border-radius: 100px;
+  }
+</style>
+
+<div class="header">
+  {% avatar alisnic size=150 %}
+  <p>
+    <span><a href="https://github.com/alisnic" >github</a></span>
     |
-    <li><a href="https://twitter.com/andrei_lisnic" >twitter</a></li>
+    <span><a href="https://twitter.com/andrei_lisnic" >twitter</a></span>
     |
-    <li><a href="http://www.linkedin.com/in/alisnic" >linkedin</a></li>
+    <span><a href="http://www.linkedin.com/in/alisnic" >linkedin</a></span>
     |
-    <li><a href="/feed.xml" >feed</a></li>
-  </ul>
-  <h1>Projects</h3>
-  <ul>
-    <li><a href="/nyny/">New York, New York</a></li>
-    <li><a href="https://github.com/alisnic/stackprof-webnav">StackProf Web navigator</a></li>
-  </ul>
-</header>
+    <span><a href="/feed.xml" >feed</a></span>
+  </p>
+</div>
+
+<h1>Projects</h3>
+<ul>
+  <li><a href="/nyny/">New York, New York</a></li>
+  <li><a href="https://github.com/alisnic/stackprof-webnav">StackProf Web navigator</a></li>
+</ul>
 
 <h1>Posts</h1>
 <ul>
