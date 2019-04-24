@@ -9,11 +9,29 @@
       Andrei Lisnic blog
     </title>
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="/public/css/styles.css">
-
-    <!-- RSS -->
-    <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+    <style>
+      body {
+        font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        line-height: 1.6;
+        max-width: 40rem;
+        padding: 2rem;
+        margin: auto;
+      }
+      img {
+        max-width: 100%;
+      }
+      .inline > * {
+        display: inline;
+      }
+      pre {
+        padding: 0.5rem 0;
+        border-top: 1px solid #eee;
+        border-bottom: 1px solid #eee;
+        overflow-y: scroll;
+      }
+    </style>
+    <link rel="preload" href="/public/css/syntax.css" as="style" onload="this.rel='stylesheet'">
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="/feed.xml">
     {% seo %}
   </head>
   <body>
