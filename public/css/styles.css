@@ -8,9 +8,6 @@ body {
 img {
   max-width: 100%;
 }
-a {
-  text-decoration: none;
-}
 .inline > * {
   display: inline;
 }
@@ -18,7 +15,6 @@ pre {
   padding: 0.5rem 0;
   border-top: 1px solid #eee;
   border-bottom: 1px solid #eee;
-  max-width: 100%;
   overflow-y: scroll;
 }
 
