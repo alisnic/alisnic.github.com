@@ -10,20 +10,6 @@ layout: default
     <span class="post-date">{{ page.date | date_to_string }}</span>
     {{ content }}
   </div>
-
-  <div>
-    <h3>Related Posts</h3>
-    <ul>
-      {% for post in site.related_posts limit:3 %}
-        <li>
-          <h4>
-            <a href="{{ post.url }}">
-              {{ post.title }}
-              <small>{{ post.date | date_to_string }}</small>
-            </a>
-          </h4>
-        </li>
-      {% endfor %}
-    </ul>
-  </div>
 </div>
+
+<a href="/">&larr; back to homepage</a>
