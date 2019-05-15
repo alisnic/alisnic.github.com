@@ -26,6 +26,17 @@
         border-bottom: 1px solid #eee;
         overflow-y: scroll;
       }
+
+      @media (prefers-color-scheme: dark) {
+        body {
+          filter: invert(1);
+          background-color: black;
+        }
+
+        img {
+          filter: invert(1);
+        }
+      }
     </style>
     <link rel="preload" href="/public/css/syntax.css" as="style" onload="this.rel='stylesheet'">
     <link rel="alternate" type="application/rss+xml" title="RSS" href="/feed.xml">
