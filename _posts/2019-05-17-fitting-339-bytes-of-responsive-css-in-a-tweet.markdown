@@ -8,7 +8,7 @@ Being amazed by how good and functional a web page can be by just
 [using 339 bytes of css](https://blog.koley.in/2019/339-bytes-of-responsive-css),
 I decided to play a bit with it and adapt it to my needs.
 
-The styling of the post you are reading right now, (minified, except syntax highlighting css) fits in a tweet.
+The styling of the post you are reading right now, (minified, except syntax highlighting css) [fits in a tweet](https://mobile.twitter.com/andrei_lisnic/status/1129495286471168006).
 It has the following features:
 - responsive - looks good on any screen
 - is friendly to source code
@@ -37,7 +37,9 @@ img {
 }
 
 pre {
-  padding: 0.5rem 0;
+  /* add a line to separate code blocks visually from usual text */
+  border: 1px solid #eee;
+  border-width: 1px 0;
   /* Pre blocks don't wrap (and shouldn't). Scroll their content in case
   they overflow so that the viewport size stays the same */
   overflow-y: scroll;
