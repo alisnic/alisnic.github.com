@@ -24,25 +24,15 @@ very strong feelings as to how Rails code should be written.
 Fast forward 7 years, and a lot of things happened in my carreer as software developer:
 - My experience got more rich. I launched projects, working with a lot of different
 constraints and people
-- My day to day work changed. I climbed the company ladder, eventually ending up as a
-CTO. The types of decisions that I have to make changed.
+- My day to day work changed. I climbed the company ladder, eventually ending up in the
+CTO position. The types of decisions that I have to make changed.
 - I got more emotionally mature, which thankfully prevented me from writing more
 controversial blog posts
 
 So what do I think about that post, and the comment from [@dhh][2] now?
 Where should logic of your application be put? model? controller? service objects?
 
-It's about tradeoffs and personal preferences:
-- people tend to solve only problems that they see. If the code is ugly, but it's
-rarely changed, it's not that big of a deal **as long as the interface for it is good
-and there's decent test coverage**
-- tools tend to have an impact on design. People that use code folding and have huge
-monitors are more likely to have large files with code than those with small monitors
-that avoid code folding. That pushes the latter group to think about refactor earlier
-- people are different. Some feel comfortable processing huge code with a lot of branches,
-some get lost very easily
-
-So, if you found a way to keep all the logic in controllers, while:
+It's about tradeoffs and personal preferences. If you found a way to keep all the logic in controllers, while:
 - your team iterates fast and does not make silly mistakes
 - code is easily digestible
 - new features can be added without pain
@@ -62,5 +52,5 @@ be very similar to discussing religion. There's so much hidden context, that you
 well just respect the other's decisions and focus on their personal insight instead.
 
 [1]: /posts/rails-logic/
-[2]: /path/to/dhh
+[2]: https://mobile.twitter.com/dhh
 [3]: https://grantammons.me/2012/12/22/where-the-logic-hides/
