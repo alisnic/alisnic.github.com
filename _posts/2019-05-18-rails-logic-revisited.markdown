@@ -4,7 +4,7 @@ title: On logic in a Rails app, revisited 6 years later
 category: posts
 ---
 
-7 year ago, I wrote one of my most popular blog posts - [On logic in a Rails app][1], in which I debate one of [@dhh][2]'s
+6 years ago, I wrote one of my most popular blog posts - [On logic in a Rails app][1], in which I debate one of [@dhh][2]'s
 critiques of [extracting code from controller][3]:
 
 > So all you've done here is extract the work of the controller action into a separate object. This adds needless indirection, makes the code base harder to follow, and is completely unnecessary.
