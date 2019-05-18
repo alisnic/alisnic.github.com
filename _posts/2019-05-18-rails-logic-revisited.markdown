@@ -1,6 +1,6 @@
 ---
 layout: post
-title: On logic in a Rails app, revisited 7 years later
+title: On logic in a Rails app, revisited 6 years later
 category: posts
 ---
 
