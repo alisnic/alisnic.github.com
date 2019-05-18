@@ -21,7 +21,7 @@ developer. I was reading a lot of blog posts on the topics and (as any young
 developer with a lot of self esteem) I started to have
 very strong feelings as to how Rails code should be written.
 
-Fast forward 7 years, and a lot of things happened in my carreer as software developer:
+Fast forward 6 years, and a lot of things happened in my career as software developer:
 - My experience got more rich. I launched projects, working with a lot of different
 constraints and people
 - My day to day work changed. I climbed the company ladder, eventually ending up in the
@@ -32,7 +32,7 @@ controversial blog posts
 So what do I think about that post, and the comment from [@dhh][2] now?
 Where should logic of your application be put? model? controller? service objects?
 
-It's about tradeoffs and personal preferences. If you found a way to keep all the logic in controllers, while:
+It's about trade-offs and personal preferences. If you found a way to keep all the logic in controllers, while:
 - your team iterates fast and does not make silly mistakes
 - code is easily digestible
 - new features can be added without pain
@@ -41,7 +41,7 @@ Then good for you! It doesn't matter what me or [@dhh][2] or any other person sa
 well maybe putting logic in domain objects will work for your team, maybe not. Just explore and
 find what suits you best.
 
-Each team operates in an unique set of technical and non-technical circumastances, which are almost impossible to communicate
+Each team operates in an unique set of technical and non-technical circumstances, which are almost impossible to communicate
 via internet during technical arguments. That's due language limitations, lack of proper
 writing skills for all parties, silly code samples (most code is under NDA, so people use animals that inherit each other
 to teach OO)
