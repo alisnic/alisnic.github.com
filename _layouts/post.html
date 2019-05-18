@@ -7,7 +7,23 @@ layout: default
 <div class="content">
   <div class="post">
     <h2>{{ page.title }}</h1>
-    <span class="post-date">{{ page.date | date_to_string }}</span>
+
+    {% assign words = content | number_of_words %}
+
+    <span>
+      <i>
+        published on {{ page.date | date_to_string }},
+
+        {% if words < 360 %}
+          1
+        {% else %}
+          {{ words | divided_by:180 }}
+        {% endif %}
+
+        minute read
+      </i>
+    </span>
+
     {{ content }}
   </div>
 </div>
