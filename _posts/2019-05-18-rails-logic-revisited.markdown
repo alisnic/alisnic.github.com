@@ -51,6 +51,9 @@ discussion on the internet about the "right" approach of building software, beca
 be very similar to discussing religion. There's so much hidden context, that you might as
 well just respect the other's decisions and focus on their personal insight instead.
 
+See discussion of this post on [Hacker News][hn].
+
 [1]: /posts/rails-logic/
 [2]: https://mobile.twitter.com/dhh
 [3]: https://grantammons.me/2012/12/22/where-the-logic-hides/
+[hn]: https://news.ycombinator.com/item?id=19949554
