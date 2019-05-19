@@ -4,28 +4,42 @@ layout: default
 
 <a href="/">&larr; back to homepage</a>
 
-<div class="content">
-  <div class="post">
-    <h2>{{ page.title }}</h1>
+<h2>{{ page.title }}</h1>
 
-    {% assign words = content | number_of_words %}
+{% assign words = content | number_of_words %}
 
-    <span>
-      <i>
-        published on {{ page.date | date_to_string }},
+<span>
+  <i>
+    published on {{ page.date | date_to_string }},
 
-        {% if words < 360 %}
-          1
-        {% else %}
-          {{ words | divided_by:180 }}
-        {% endif %}
+    {% if words < 360 %}
+      1
+    {% else %}
+      {{ words | divided_by:180 }}
+    {% endif %}
 
-        minute read
-      </i>
-    </span>
+    minute read
+  </i>
+</span>
 
-    {{ content }}
-  </div>
-</div>
+{{ content }}
+
+<hr />
+
+<h3>Read more posts</h3>
+<ul>
+  {% for post in site.posts limit: 5 %}
+    {% if post.url != page.url %}
+      <li>
+        <a href="{{ post.url }}">
+          {{ post.title }}
+        </a>
+        <span class="post-date">{{ post.date | date_to_string }}</span>
+      </li>
+    {% endif %}
+  {% endfor %}
+</ul>
+
+<hr />
 
 <a href="/">&larr; back to homepage</a>
