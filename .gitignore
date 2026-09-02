@@ -1,4 +1,7 @@
 _site/
+.bundle/
+.jekyll-cache/
+vendor/bundle/
 *.sublime-project
 *.sublime-workspace
 .DS_Store

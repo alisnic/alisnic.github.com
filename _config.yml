@@ -5,6 +5,8 @@ author:
   name:       "Andrei Lisnic"
   email:      "andrei.lisnic@gmail.com"
 markdown:     kramdown
+kramdown:
+  input: GFM
 permalink:    /posts/:title/
 plugins:
   - jekyll-feed
