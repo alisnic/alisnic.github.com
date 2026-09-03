@@ -2,6 +2,7 @@
 layout: post
 title: Unity performance tweaks
 category: posts
+description: Unity was slow. I deleted some lenses and turned off the pretty animations.
 ---
 
 **Prerequisites:**

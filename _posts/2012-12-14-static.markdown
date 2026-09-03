@@ -2,6 +2,7 @@
 layout: post
 title: Make it static
 category: posts
+description: I finally made a static blog that actually works.
 ---
 
 Finally, I made a static blog which actually works. 

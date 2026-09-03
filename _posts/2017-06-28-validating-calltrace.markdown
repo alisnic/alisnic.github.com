@@ -2,6 +2,7 @@
 layout: post
 title: Enforcing that a ruby method is called from a specific location
 category: posts
+description: "A Twitter puzzle: lock a Ruby method to one caller. I solved it, then admitted the problem barely exists."
 ---
 
 If you, like me, get interested in tricky programming questions found randomly

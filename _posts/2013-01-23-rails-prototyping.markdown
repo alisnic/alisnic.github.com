@@ -2,6 +2,7 @@
 layout: post
 title: Fast Rails app prototyping
 category: posts
+description: "An idea that won't leave you alone needs a faster path than `rails new`."
 ---
 
 There are often times when you have an idea that will refuse to leave your mind.

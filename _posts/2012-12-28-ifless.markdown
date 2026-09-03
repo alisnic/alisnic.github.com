@@ -2,6 +2,7 @@
 layout: post
 title: If-less programming
 category: posts
+description: Misko Hevery said a lot of ifs are a smell. I went down that rabbit hole.
 ---
 
 I recently watched a Google tech talk called ["The Clean Code Talks -- Inheritance, Polymorphism, & Testing"](http://www.youtube.com/watch?v=4F72VULWFvc&feature=channel), and I was amazed how **Misko Hevery** explained that (a lot of) ifs can be a smelly thing in a Object Oriented language.

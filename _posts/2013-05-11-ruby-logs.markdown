@@ -2,6 +2,7 @@
 layout: post
 title: Log filename, line and function name in ruby automatically
 category: posts
+description: 'My logger printed "test message" and left me guessing where it came from.'
 ---
 
 Suppose you have a app with a logger:

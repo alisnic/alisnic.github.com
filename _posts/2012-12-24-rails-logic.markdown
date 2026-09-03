@@ -2,11 +2,13 @@
 layout: post
 title: On logic in a Rails app
 category: posts
+description: I worked on a Rails app with 800-line controllers. I was struggling.
 ---
 
 Recently, Grant Ammons wrote [a nice article](http://gammons.github.com/architecture/2012/12/22/where-the-logic-hides/) about where logic should lie in a Rails app. I would like to complement his opinion, and probably add some real life arguments to it.
 
 Grant extracted logic from the controller, and put it in a separate object, which I also do most of the time. However, a user named DHH (which probably is DHH) said:
+
 > So all you've done here is extract the work of the controller action into a separate object. This adds needless indirection, makes the code base harder to follow, and is completely unnecessary.
 
 I strongly disagree, and I have good reasons for it.
@@ -14,6 +16,7 @@ I strongly disagree, and I have good reasons for it.
 You know what makes the code base hard to follow? Fat controllers with logic in them. I worked on a Rails app with Controllers of 800 lines of code, **it. is. a. freaking. nightmare.**
 
 ## My approach
+
 I look at Rails as web presentation layer, it makes my app work in the browser. This has some consequences to my codebase:
 
 - data-only models (no logic should be in models)
@@ -23,6 +26,7 @@ I look at Rails as web presentation layer, it makes my app work in the browser. 
 You might think that this is a refactor pattern, and you are right. And you might say that this unnecessary to do from the start, and you may also be right. But the cost of creating a file and moving behaviour there is exactly 0, but the benefits are there from day 1.
 
 ## Why I do it
+
 ### Fast tests
 
 The least I am coupled to Rails, the fastest my tests are. Currently, on a medium Rails project my tests run 2-3 seconds, where 90% of the time is wasted to boot rails and test models.
@@ -40,7 +44,7 @@ class RatingsController < ApplicationController
 end
 ```
 
-`RatesBusiness` has some foursquare-related logic besides just creating a entry in the database. Using this approach, I have a *very* fast TDD flow, because most of the time I don't need Rails to test my logic. (any dependency to models is stubbed, as any other external dependency).
+`RatesBusiness` has some foursquare-related logic besides just creating a entry in the database. Using this approach, I have a _very_ fast TDD flow, because most of the time I don't need Rails to test my logic. (any dependency to models is stubbed, as any other external dependency).
 
 Your controller only connects your logic to the web interface.
 

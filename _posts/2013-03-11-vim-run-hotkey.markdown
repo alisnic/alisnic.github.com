@@ -2,6 +2,7 @@
 layout: post
 title: Vim hotkey to run current file depending on the filetype
 category: posts
+description: You're in vim, you want to run the file. F5 should just know how.
 ---
 
 So, here's the thing, you're editing a file and you need to run it. And, since

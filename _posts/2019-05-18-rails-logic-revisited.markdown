@@ -2,6 +2,7 @@
 layout: post
 title: On logic in a Rails app, revisited 6 years later
 category: posts
+description: Six years ago I picked a fight about where Rails logic belongs. Now I think we were arguing about religion.
 ---
 
 6 years ago, I wrote one of my most popular blog posts - [On logic in a Rails app][1], in which I debate one of [@dhh][2]'s

@@ -2,6 +2,7 @@
 layout: post
 title: Fitting the "339 bytes of responsive CSS" in a tweet, with a twist
 category: posts
+description: I took a 339-byte stylesheet and made it the CSS for this blog. It even does dark mode.
 ---
 
 Being amazed by how good and functional a web page can be by just
