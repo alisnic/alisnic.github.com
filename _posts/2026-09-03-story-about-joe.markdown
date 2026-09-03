@@ -13,7 +13,7 @@ It started with the usual stuff - we did some onboarding training for Joe. Expla
 
 Then his first PR came in. I don’t know where to even start, Jesus Christ! Unrelated refactors, over-engineering, un-checked assumptions. It was all over the place. Now I’m stuck with this guy, great. What’s even worse, every time I gave him feedback - he complained that “this is not documented”. Bro, nobody has time for this, I am the documentation! But I’m not an amateur, I told him to fix the documentation (didn’t expect that, huh smart ass?).
 
-I have to give credit where it's due to Joe - he just takes the feedback in like a calm ocean, even when m over-reacting. So the story continued in the same fashion - crappy PRs -> feedback -> improvements. I even lost count at this point, it was like a workout routine for me.
+I have to give credit where it's due to Joe - he just takes the feedback in like a calm ocean, even when I'm over-reacting. So the story continued in the same fashion - crappy PRs -> feedback -> improvements. I even lost count at this point, it was like a workout routine for me.
 
 Then in the December something happened. I don’t really know where that came from. Joe’s PRs started to match the other engineers PRs in quality, there were still some rough edges, but overall they were decent. We needed to start shifting the conversation with Joe - what problem are we solving, who are the end users. We were past the technicalities and the only thing that Joe was missing is the “why” and “for whom”.
 
