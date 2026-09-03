@@ -1,9 +1,26 @@
 title:        "Andrei Lisnic blog"
 tagline:      "random thoughts by @andrei_lisnic"
+description:  "Writing on Rails, Ruby, and building software — by Andrei Lisnic."
 url:          https://alisnic.github.io
+logo:         https://avatars.githubusercontent.com/alisnic?s=400
+defaults:
+  - scope:
+      path: ""
+    values:
+      image: https://avatars.githubusercontent.com/alisnic?s=400
+twitter:
+  username:   andrei_lisnic
+  card:       summary
 author:
   name:       "Andrei Lisnic"
   email:      "andrei.lisnic@gmail.com"
+  twitter:    andrei_lisnic
+social:
+  name:       Andrei Lisnic
+  links:
+    - https://github.com/alisnic
+    - https://twitter.com/andrei_lisnic
+    - https://www.linkedin.com/in/alisnic
 markdown:     kramdown
 kramdown:
   input: GFM
