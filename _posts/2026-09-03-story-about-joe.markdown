@@ -2,6 +2,7 @@
 layout: post
 title: A story about Joe
 category: posts
+description: Joe joined the team uninvited. His first PRs were a mess, and I was stuck with him.
 ---
 
 When my boss told me that Joe will join our team, I was furious. We never asked for this, we were doing fine. I don’t know Joe and his skills, and now I need to work with him, sigh. I hate nepotism.
